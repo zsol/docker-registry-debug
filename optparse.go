@@ -23,6 +23,7 @@ var commands = [...]command{
 	command{"info", "<repos_name>", "lookup repos meta-data", 1, CmdInfo},
 	command{"layerinfo", "<repos_name> <layer_id>", "lookup layer meta-data", 2, CmdLayerInfo},
 	command{"curlme", "<repos_name> <layer_id>", "print a curl command for fetching the layer", 2, CmdCurlme},
+	command{"size", "<repos_name>", "display size of repos and its layers", 1, CmdSize},
 }
 
 func OptParse() {

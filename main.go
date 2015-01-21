@@ -93,6 +93,26 @@ func CmdLayerInfo(config *Config, args []string) {
 	w.Flush()
 }
 
+func CmdSize(config *Config, args []string) {
+	registry, token := initRegistry(config, args[0])
+	tags, err := registry.ReposTags(token, args[0])
+	if err != nil {
+		fatal(err)
+	}
+	latestId := tags["latest"]
+	ancestry, err := registry.LayerAncestry(token, latestId)
+	if err != nil {
+		fatal(err)
+	}
+	w := new(tabwriter.Writer)
+	w.Init(os.Stdout, 0, 0, 4, ' ', 0)
+	for _, id := range *ancestry {
+		info, _ := registry.LayerJson(token, id)
+		fmt.Fprintf(w, "- %s\t%s\n", humanize.Bytes(uint64(info.Size)), id)
+	}
+	w.Flush()
+}
+
 func CmdCurlme(config *Config, args []string) {
 	registry, token := initRegistry(config, args[0])
 	fmt.Printf("curl -i --location-trusted -I -X GET -H \"Authorization: Token %s\" %s/v1/images/%s/layer\n",
